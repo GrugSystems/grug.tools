@@ -1,4 +1,4 @@
-import { Clock, Hash, Text } from 'lucide-react';
+import { Clock, Hash, Palette, Text } from 'lucide-react';
 
 export const tools = [
   {
@@ -18,6 +18,11 @@ export const tools = [
         Icon: Clock,
         title: 'Timezone Converter',
         url: '/timezones',
+      },
+      {
+        Icon: Palette,
+        title: 'Color Space Converter',
+        url: '/colors',
       },
     ],
   },

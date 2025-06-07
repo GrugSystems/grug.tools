@@ -1,7 +1,8 @@
 import { ClipboardPaste, Copy } from 'lucide-react';
-import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { type ChangeEvent, useEffect, useState } from 'react';
 import short from 'short-uuid';
 import { v1 as uuidV1, v4 as uuidV4, v6 as uuidV6, v7 as uuidV7 } from 'uuid';
+import { Shortcut } from '~/components/shortcut';
 import { ToolCard, ToolField, ToolHeader, ToolRow } from '~/components/tool';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
@@ -26,34 +27,6 @@ export function meta(_: Route.MetaArgs) {
     { title: 'UUID Tool | Grug Tools' },
     { name: 'description', content: description },
   ];
-}
-
-function isMacOS() {
-  if (typeof navigator !== 'undefined') {
-    return navigator.userAgent.includes('Mac');
-  }
-  return false;
-}
-
-function getMod() {
-  return isMacOS() ? '⌘' : '^';
-}
-
-function Shortcut({ keys }: { keys: Array<string> }) {
-  return (
-    <span className="inline-flex gap-1">
-      {keys.flatMap((key, i) => {
-        const kbd = (
-          <kbd className="px-2 text-sm font-medium bg-white border border-gray-200 rounded-sm shadow-sm flex justify-center items-center">
-            {key === 'mod' ? getMod() : key}
-          </kbd>
-        );
-        return i < keys.length - 1
-          ? [kbd, <span className="text-gray-500">+</span>]
-          : [kbd];
-      })}
-    </span>
-  );
 }
 
 const base58Translator = short();
@@ -139,7 +112,7 @@ export default function Uuid() {
     navigator.clipboard.writeText(base90Translator.fromUUID(uuid));
   }
 
-  const handlePaste = useCallback(async () => {
+  async function handlePaste() {
     try {
       const text = await navigator.clipboard.readText();
       const detectedBase = detectBase(text);
@@ -154,7 +127,7 @@ export default function Uuid() {
     } catch (err) {
       console.error('Failed to read clipboard contents: ', err);
     }
-  }, []);
+  }
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

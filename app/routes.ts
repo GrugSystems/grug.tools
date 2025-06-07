@@ -5,4 +5,5 @@ export default [
   route('/uuid', 'routes/uuid.tsx'),
   route('/lipsum', 'routes/lipsum.tsx'),
   route('/timezones', 'routes/timezones.tsx'),
+  route('/colors', 'routes/colors.tsx'),
 ] satisfies RouteConfig;
