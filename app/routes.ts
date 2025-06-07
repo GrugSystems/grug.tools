@@ -6,4 +6,5 @@ export default [
   route('/lipsum', 'routes/lipsum.tsx'),
   route('/timezones', 'routes/timezones.tsx'),
   route('/colors', 'routes/colors.tsx'),
+  route('/jwt-decode', 'routes/jwt-decode.tsx'),
 ] satisfies RouteConfig;

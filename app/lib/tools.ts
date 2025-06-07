@@ -1,4 +1,4 @@
-import { Clock, Hash, Palette, Text } from 'lucide-react';
+import { Clock, Hash, KeyRound, Palette, Text } from 'lucide-react';
 
 export const tools = [
   {
@@ -23,6 +23,11 @@ export const tools = [
         Icon: Palette,
         title: 'Color Space Converter',
         url: '/colors',
+      },
+      {
+        Icon: KeyRound,
+        title: 'JWT Decoder',
+        url: '/jwt-decode',
       },
     ],
   },
