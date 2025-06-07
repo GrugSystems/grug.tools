@@ -9,7 +9,7 @@
     "check": "npm-run-all check:*",
     "check:format": "prettier --check .",
     "check:lint": "eslint .",
-    "check:ts": "tsc",
+    "check:ts": "react-router typegen && tsc",
     "format": "prettier --write ."
   },
   "dependencies": {
