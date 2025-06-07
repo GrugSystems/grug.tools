@@ -2,7 +2,7 @@ import { ClipboardPaste, Copy } from 'lucide-react';
 import { type ChangeEvent, useEffect, useState } from 'react';
 import short from 'short-uuid';
 import { v1 as uuidV1, v4 as uuidV4, v6 as uuidV6, v7 as uuidV7 } from 'uuid';
-import { Shortcut } from '~/components/shortcut';
+import { Paste } from '~/components/shortcut';
 import { ToolCard, ToolField, ToolHeader, ToolRow } from '~/components/tool';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
@@ -147,8 +147,8 @@ export default function Uuid() {
     <>
       <ToolHeader title="UUID Tool">
         <p>
-          {description}. Paste an existing UUID with{' '}
-          <Shortcut keys={['mod', 'v']} />.
+          {description}. Paste an existing UUID in any supported format with{' '}
+          <Paste />.
         </p>
       </ToolHeader>
       <div className="flex flex-col gap-4">

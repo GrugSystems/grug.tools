@@ -8,7 +8,7 @@ import {
   XCircle,
 } from 'lucide-react';
 import { type ChangeEvent, useEffect, useState } from 'react';
-import { Shortcut } from '~/components/shortcut';
+import { Paste } from '~/components/shortcut';
 import { ToolCard, ToolField, ToolHeader } from '~/components/tool';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
@@ -284,8 +284,7 @@ export default function JwtDecode() {
     <>
       <ToolHeader title="JWT Decoder">
         <p>
-          {description}. Paste an existing JWT with{' '}
-          <Shortcut keys={['mod', 'v']} />
+          {description}. Paste an existing JWT with <Paste />
         </p>
       </ToolHeader>
       <div className="flex flex-col gap-4">

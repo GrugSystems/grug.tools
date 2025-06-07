@@ -1,7 +1,7 @@
 import { converter, formatCss, formatHex, formatHsl, parse } from 'culori';
 import { ClipboardPaste, Copy, Pipette } from 'lucide-react';
 import { type ChangeEvent, useEffect, useState } from 'react';
-import { Shortcut } from '~/components/shortcut';
+import { Paste } from '~/components/shortcut';
 import { ToolCard, ToolField, ToolHeader, ToolRow } from '~/components/tool';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
@@ -106,8 +106,7 @@ export default function Colors() {
     <>
       <ToolHeader title="Color Space Converter">
         <p>
-          {description}. Paste any color format with{' '}
-          <Shortcut keys={['mod', 'v']} />.
+          {description}. Paste any color format with <Paste />.
         </p>
       </ToolHeader>
       <div className="flex flex-col gap-4">
