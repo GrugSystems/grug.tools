@@ -7,7 +7,7 @@ import {
   CheckCircle,
   XCircle,
 } from 'lucide-react';
-import { type ChangeEvent, useEffect, useState } from 'react';
+import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { Paste } from '~/components/shortcut';
 import { ToolCard, ToolField, ToolHeader } from '~/components/tool';
 import { Button } from '~/components/ui/button';
@@ -18,6 +18,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '~/components/ui/tooltip';
+import { useGlobalPaste } from '~/hooks/use-global-paste';
 import type { Route } from './+types/home';
 
 const description = 'Decode and inspect JSON Web Tokens (JWT)';
@@ -154,6 +155,19 @@ export default function JwtDecode() {
   const [privateKey, setPrivateKey] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
 
+  const handlePaste = useCallback((pastedText: string) => {
+    console.log({ pastedText });
+    setToken(pastedText);
+    const decoded = appDecodeJwt(pastedText);
+    setDecodedJwt({
+      ...decoded,
+      signatureValid: undefined,
+      validationError: undefined,
+    });
+  }, []);
+
+  useGlobalPaste(handlePaste);
+
   function handleTokenChange(e: ChangeEvent<HTMLInputElement>) {
     const newToken = e.target.value;
     setToken(newToken);
@@ -251,34 +265,6 @@ export default function JwtDecode() {
 
     validateToken();
   }, [token, secret, publicKey, decodedJWT?.valid, decodedJWT?.header.alg]);
-
-  // Global paste handler
-  useEffect(() => {
-    function handlePaste(e: ClipboardEvent) {
-      const target = e.target as HTMLElement;
-      // Only handle paste when not in an input field
-      if (
-        target.tagName !== 'INPUT' &&
-        target.tagName !== 'TEXTAREA' &&
-        !target.isContentEditable
-      ) {
-        const pastedText = e.clipboardData?.getData('text');
-        if (pastedText && pastedText.trim()) {
-          setToken(pastedText.trim());
-          const decoded = appDecodeJwt(pastedText.trim());
-          setDecodedJwt({
-            ...decoded,
-            signatureValid: undefined,
-            validationError: undefined,
-          });
-          e.preventDefault();
-        }
-      }
-    }
-
-    document.addEventListener('paste', handlePaste);
-    return () => document.removeEventListener('paste', handlePaste);
-  }, []);
 
   return (
     <>

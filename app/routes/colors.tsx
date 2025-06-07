@@ -1,6 +1,6 @@
 import { converter, formatCss, formatHex, formatHsl, parse } from 'culori';
 import { ClipboardPaste, Copy, Pipette } from 'lucide-react';
-import { type ChangeEvent, useEffect, useState } from 'react';
+import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { Paste } from '~/components/shortcut';
 import { ToolCard, ToolField, ToolHeader, ToolRow } from '~/components/tool';
 import { Button } from '~/components/ui/button';
@@ -10,6 +10,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '~/components/ui/tooltip';
+import { useGlobalPaste } from '~/hooks/use-global-paste';
 import type { Route } from './+types/colors';
 
 const description =
@@ -77,30 +78,46 @@ export default function Colors() {
     }
   }
 
-  async function handlePaste() {
+  const handlePaste = useCallback((text: string) => {
     try {
-      const text = await navigator.clipboard.readText();
       const parsedColor = parse(text);
 
       if (parsedColor) {
         setColor(text);
+      } else {
+        alert('The pasted text is not a valid color format.');
       }
     } catch (err) {
+      console.error('Failed to parse color: ', err);
+      alert('Failed to parse the pasted text as a color.');
+    }
+  }, []);
+
+  async function handleManualPaste() {
+    try {
+      const text = await navigator.clipboard.readText();
+      handlePaste(text);
+    } catch (err) {
       console.error('Failed to read clipboard contents: ', err);
+      alert(
+        'Failed to read from clipboard. Please try again or paste manually.',
+      );
     }
   }
+
+  useGlobalPaste(handlePaste);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key === 'v') {
         event.preventDefault();
-        handlePaste();
+        handleManualPaste();
       }
     };
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [handlePaste]);
+  }, []);
 
   return (
     <>
@@ -124,7 +141,7 @@ export default function Colors() {
             </ToolField>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button onClick={handlePaste}>
+                <Button onClick={handleManualPaste}>
                   <ClipboardPaste />
                 </Button>
               </TooltipTrigger>

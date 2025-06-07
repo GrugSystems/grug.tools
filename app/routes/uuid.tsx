@@ -1,5 +1,5 @@
 import { ClipboardPaste, Copy } from 'lucide-react';
-import { type ChangeEvent, useEffect, useState } from 'react';
+import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
 import short from 'short-uuid';
 import { v1 as uuidV1, v4 as uuidV4, v6 as uuidV6, v7 as uuidV7 } from 'uuid';
 import { Paste } from '~/components/shortcut';
@@ -18,6 +18,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '~/components/ui/tooltip';
+import { useGlobalPaste } from '~/hooks/use-global-paste';
 import type { Route } from './+types/home';
 
 const description = 'Generate UUIDs and convert between different bases';
@@ -112,9 +113,8 @@ export default function Uuid() {
     navigator.clipboard.writeText(base90Translator.fromUUID(uuid));
   }
 
-  async function handlePaste() {
+  const handlePaste = useCallback((text: string) => {
     try {
-      const text = await navigator.clipboard.readText();
       const detectedBase = detectBase(text);
 
       if (detectedBase === 'hex') {
@@ -125,15 +125,30 @@ export default function Uuid() {
         setUuid(base36Translator.toUUID(text));
       }
     } catch (err) {
+      console.error('Failed to convert UUID: ', err);
+      alert('Failed to convert the pasted text to UUID format.');
+    }
+  }, []);
+
+  async function handleManualPaste() {
+    try {
+      const text = await navigator.clipboard.readText();
+      handlePaste(text);
+    } catch (err) {
       console.error('Failed to read clipboard contents: ', err);
+      alert(
+        'Failed to read from clipboard. Please try again or paste manually.',
+      );
     }
   }
+
+  useGlobalPaste(handlePaste);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key === 'v') {
         event.preventDefault();
-        handlePaste();
+        handleManualPaste();
       }
     };
 
@@ -180,7 +195,7 @@ export default function Uuid() {
             </ToolField>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button onClick={handlePaste}>
+                <Button onClick={handleManualPaste}>
                   <ClipboardPaste />
                 </Button>
               </TooltipTrigger>
