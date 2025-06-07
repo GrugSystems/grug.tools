@@ -1,3 +1,5 @@
 .react-router
+.wrangler
 build
+dist
 node_modules

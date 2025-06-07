@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "grug-tools",
+  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_date": "2025-04-04",
+  "main": "./workers/app.ts",
+  "observability": {
+    "logs": {
+      "enabled": true,
+    },
+  },
+}
