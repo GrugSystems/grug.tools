@@ -1,0 +1,24 @@
+import { Clock, Hash, Text } from 'lucide-react';
+
+export const tools = [
+  {
+    title: 'Tools',
+    items: [
+      {
+        Icon: Hash,
+        title: 'UUID Tool',
+        url: '/uuid',
+      },
+      {
+        Icon: Text,
+        title: 'Lorem Ipsum',
+        url: '/lipsum',
+      },
+      {
+        Icon: Clock,
+        title: 'Timezone Converter',
+        url: '/timezones',
+      },
+    ],
+  },
+];
