@@ -1,4 +1,11 @@
-import { Clock, Hash, KeyRound, Palette, Text } from 'lucide-react';
+import {
+  ArrowLeftRight,
+  Clock,
+  Hash,
+  KeyRound,
+  Palette,
+  Text,
+} from 'lucide-react';
 
 export const tools = [
   {
@@ -28,6 +35,11 @@ export const tools = [
         Icon: KeyRound,
         title: 'JWT Decoder',
         url: '/jwt-decode',
+      },
+      {
+        Icon: ArrowLeftRight,
+        title: 'Format Converter',
+        url: '/converter',
       },
     ],
   },
