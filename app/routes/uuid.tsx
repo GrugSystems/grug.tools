@@ -34,10 +34,22 @@ const base58Translator = short();
 const base36Translator = short(short.constants.uuid25Base36);
 const base90Translator = short(short.constants.cookieBase90);
 
+function isValidUUID(uuid: string): boolean {
+  try {
+    const trimmed = uuid.trim();
+    return (
+      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
+        trimmed,
+      ) || /^[0-9a-fA-F]{32}$/.test(trimmed)
+    );
+  } catch {
+    return false;
+  }
+}
+
 function detectBase(input: string): string {
   const trimmed = input.trim();
 
-  // Check for hex UUID format (with hyphens)
   if (
     /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
       trimmed,
@@ -46,12 +58,10 @@ function detectBase(input: string): string {
     return 'hex';
   }
 
-  // Check for hex UUID format (without hyphens)
   if (/^[0-9a-fA-F]{32}$/.test(trimmed)) {
     return 'hex';
   }
 
-  // Check for base58 (Bitcoin alphabet, no 0, O, I, l)
   if (
     /^[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+$/.test(
       trimmed,
@@ -61,13 +71,25 @@ function detectBase(input: string): string {
     return 'base58';
   }
 
-  // Check for base36 (0-9, a-z)
   if (/^[0-9a-zA-Z]+$/.test(trimmed) && trimmed.length < 32) {
     return 'base36';
   }
 
-  // Default to hex if we can't determine
   return 'hex';
+}
+
+function safeBaseConvert(
+  uuid: string,
+  converter: { fromUUID: (uuid: string) => string },
+): string {
+  try {
+    if (!isValidUUID(uuid)) {
+      return '';
+    }
+    return converter.fromUUID(uuid);
+  } catch {
+    return '';
+  }
 }
 
 export default function Uuid() {
@@ -104,13 +126,22 @@ export default function Uuid() {
   }
 
   function handleCopyBase58() {
-    navigator.clipboard.writeText(base58Translator.fromUUID(uuid));
+    const converted = safeBaseConvert(uuid, base58Translator);
+    if (converted) {
+      navigator.clipboard.writeText(converted);
+    }
   }
   function handleCopyBase36() {
-    navigator.clipboard.writeText(base36Translator.fromUUID(uuid));
+    const converted = safeBaseConvert(uuid, base36Translator);
+    if (converted) {
+      navigator.clipboard.writeText(converted);
+    }
   }
   function handleCopyBase90() {
-    navigator.clipboard.writeText(base90Translator.fromUUID(uuid));
+    const converted = safeBaseConvert(uuid, base90Translator);
+    if (converted) {
+      navigator.clipboard.writeText(converted);
+    }
   }
 
   const handlePaste = useCallback((text: string) => {
@@ -219,7 +250,7 @@ export default function Uuid() {
           <ToolHeader title="Base Conversion" />
           <ToolRow>
             <ToolField label="Base 58 (Short)">
-              <Input disabled value={base58Translator.fromUUID(uuid)} />
+              <Input disabled value={safeBaseConvert(uuid, base58Translator)} />
             </ToolField>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -234,7 +265,7 @@ export default function Uuid() {
           </ToolRow>
           <ToolRow>
             <ToolField label="Base 36 (uuid25)">
-              <Input disabled value={base36Translator.fromUUID(uuid)} />
+              <Input disabled value={safeBaseConvert(uuid, base36Translator)} />
             </ToolField>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -249,7 +280,7 @@ export default function Uuid() {
           </ToolRow>
           <ToolRow>
             <ToolField label="Base 90 (Cookies)">
-              <Input disabled value={base90Translator.fromUUID(uuid)} />
+              <Input disabled value={safeBaseConvert(uuid, base90Translator)} />
             </ToolField>
             <Tooltip>
               <TooltipTrigger asChild>
